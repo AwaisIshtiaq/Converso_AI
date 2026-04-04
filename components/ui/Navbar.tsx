@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs";
+import { SignInButton, UserButton, Show } from "@clerk/nextjs";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -33,11 +33,6 @@ const Navbar = () => {
                     <SignInButton mode="modal">
                         <button className="btn-signin">Sign In</button>
                     </SignInButton>
-                </Show>
-                <Show when="signed-out">
-                    <SignUpButton mode="modal">
-                        <button className="btn-signin">Sign Up</button>
-                    </SignUpButton>
                 </Show>
                 <Show when="signed-in">
                     <UserButton />
