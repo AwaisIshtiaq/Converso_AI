@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { subjects } from '@/constants'
 
 export default function SearchFilter() {
@@ -9,25 +9,48 @@ export default function SearchFilter() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [selectedSubject, setSelectedSubject] = useState('')
+  const [isReady, setIsReady] = useState(false)
 
+  // Initialize from URL on mount
   useEffect(() => {
-    const subject = searchParams.get('subject') || ''
-    setSelectedSubject(subject)
+    const subjectFromUrl = searchParams.get('subject') || ''
+    setSelectedSubject(subjectFromUrl)
+    setIsReady(true)
   }, [searchParams])
 
-  useEffect(() => {
-    if (selectedSubject) {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set('subject', selectedSubject)
-      router.push(`${pathname}?${params.toString()}`)
+  // Handle filter change
+  const handleFilterChange = useCallback((value: string) => {
+    setSelectedSubject(value)
+    
+    const params = new URLSearchParams(searchParams.toString())
+    
+    if (value && value !== '') {
+      params.set('subject', value)
+    } else {
+      params.delete('subject')
     }
-  }, [selectedSubject, router, pathname, searchParams])
+    
+    // Reset to first page when filter changes
+    params.delete('page')
+    
+    const newUrl = `${pathname}?${params.toString()}`
+    console.log('SearchFilter: Navigating to', newUrl)
+    router.push(newUrl)
+  }, [router, pathname, searchParams])
+
+  if (!isReady) {
+    return (
+      <select disabled className='border border-black rounded-lg px-3 py-1 bg-gray-100'>
+        <option>Loading...</option>
+      </select>
+    )
+  }
 
   return (
     <select
       value={selectedSubject}
-      onChange={(e) => setSelectedSubject(e.target.value)}
-      className='border border-black rounded-lg px-3 py-1'
+      onChange={(e) => handleFilterChange(e.target.value)}
+      className='border border-black rounded-lg px-3 py-1 cursor-pointer'
     >
       <option value=''>All Subjects</option>
       {subjects.map((subject) => (
