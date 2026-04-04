@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { subjectsColors } from "@/constants";
 
 interface Companion {
   id: string;
@@ -43,13 +44,16 @@ const CompanionsList = ({title, companions, className}: CompanionListProps) => {
                         <TableRow key={id}>
                             <TableCell>
                                 <Link href={`/companions/${id}`}>
-                                <div className="flex items-center gap-2">
-                                    <div className="size-[72px] flex items-center justify-center rounded-lg max-md:hidden" >
+                                <div className="flex items-center gap-3">
+                                    <div 
+                                        className="size-14 flex items-center justify-center rounded-xl max-md:hidden"
+                                        style={{ backgroundColor: subjectsColors[subject as keyof typeof subjectsColors] || '#E5D0FF' }}
+                                    >
                                         <Image
                                          src={`/icons/${subject}.svg`}
                                          alt={subject}
-                                         width={35}
-                                         height={35} />
+                                         width={28}
+                                         height={28} />
                                     </div>
                                     <div>
                                         <p className="font-medium">{name}</p>
@@ -58,7 +62,7 @@ const CompanionsList = ({title, companions, className}: CompanionListProps) => {
                                 </div>
                                 </Link>
                             </TableCell>
-                            <TableCell className="capitalize">{subject}</TableCell>
+                            <TableCell className="capitalize"><span className="bg-black text-white rounded-4xl text-sm px-2 py-1 capitalize">{subject}</span></TableCell>
                             <TableCell className="text-right">{duration} min</TableCell>
                         </TableRow>
                     ))}
