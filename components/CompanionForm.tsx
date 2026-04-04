@@ -69,8 +69,11 @@ const CompanionForm = () => {
             <FormItem>
               <FormLabel>Subject</FormLabel>
               <FormControl>
-                <select {...field} className="w-full border rounded-md p-2">
-                  <option value="">Select a subject</option>
+                <select
+                  {...field}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="">Select subject</option>
                   {subjects.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
@@ -102,8 +105,11 @@ const CompanionForm = () => {
             <FormItem>
               <FormLabel>Voice</FormLabel>
               <FormControl>
-                <select {...field} className="w-full border rounded-md p-2">
-                  <option value="">Select a voice</option>
+                <select
+                  {...field}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="">Select voice</option>
                   {voices.map((v) => (
                     <option key={v} value={v}>{v}</option>
                   ))}
@@ -121,8 +127,11 @@ const CompanionForm = () => {
             <FormItem>
               <FormLabel>Style</FormLabel>
               <FormControl>
-                <select {...field} className="w-full border rounded-md p-2">
-                  <option value="">Select a style</option>
+                <select
+                  {...field}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="">Select style</option>
                   {styles.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
@@ -140,7 +149,7 @@ const CompanionForm = () => {
             <FormItem>
               <FormLabel>Duration (minutes)</FormLabel>
               <FormControl>
-                <Input type="number" min={1} {...field} />
+                <Input type="number" placeholder="Enter duration" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
