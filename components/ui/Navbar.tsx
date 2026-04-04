@@ -1,5 +1,8 @@
+"use client"
+
 import Link from "next/link";
 import Image from "next/image";
+import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -26,9 +29,19 @@ const Navbar = () => {
                         {item.label}
                     </Link>
                 ))}
-                <Link href="/sign-in" className="hover:opacity-70 transition-opacity">
-                    Sign In
-                </Link>
+                <Show when="signed-out">
+                    <SignInButton mode="modal">
+                        <button className="btn-signin">Sign In</button>
+                    </SignInButton>
+                </Show>
+                <Show when="signed-out">
+                    <SignUpButton mode="modal">
+                        <button className="btn-signin">Sign Up</button>
+                    </SignUpButton>
+                </Show>
+                <Show when="signed-in">
+                    <UserButton />
+                </Show>
             </div>
         </div>
     );
