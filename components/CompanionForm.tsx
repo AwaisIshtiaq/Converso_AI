@@ -27,9 +27,9 @@ const formSchema = z.object({
   name: z.string().min(1, "Companion is Required"),
   subject: z.string().min(1, "Subject is Required"),
   topic: z.string().min(1, "Topic is Required"),
-  voice: z.string().min(1, "Voice is Required"),
-  style: z.string().min(1, "Style is Required"),
-  duration: z.coerce.number().min(1, "Duration is Required"),
+  voice: z.string().optional(),
+  style: z.string().optional(),
+  duration: z.coerce.number().optional(),
 })
 
 const subjects = ["Science", "Math", "Language", "Coding", "History", "Economics"]
@@ -39,6 +39,7 @@ const styles = ["Friendly", "Professional", "Playful", "Strict"]
 export function CompanionForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: "onSubmit",
     defaultValues: {
       name: "",
       subject: "",
@@ -83,7 +84,7 @@ export function CompanionForm() {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="form-companion-name">
-                    Name
+                    Companion Name
                   </FieldLabel>
                   <Input
                     {...field}
@@ -231,7 +232,7 @@ export function CompanionForm() {
           <Button type="button" variant="outline" onClick={() => form.reset()}>
             Reset
           </Button>
-          <Button type="submit" form="form-companion" className="w-full">
+          <Button type="submit" form="form-companion">
             Create Companion
           </Button>
         </Field>
