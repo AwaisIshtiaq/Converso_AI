@@ -1,37 +1,44 @@
 "use client"
 
-import { zodResolver } from "@/lib/zod-resolver"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import * as React from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
+import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { toast } from "sonner"
 
 const formSchema = z.object({
-  name: z.string().min(1, { message: "Companion is Required" }),
-  subject: z.string().min(1, { message: "Subject is Required" }),
-  topic: z.string().min(1, { message: "Topic is Required" }),
-  voice: z.string().min(1, { message: "Voice is Required" }),
-  style: z.string().min(1, { message: "Style is Required" }),
-  duration: z.coerce.number().min(1, { message: "Duration is Required" }),
+  name: z.string().min(1, "Companion is Required"),
+  subject: z.string().min(1, "Subject is Required"),
+  topic: z.string().min(1, "Topic is Required"),
+  voice: z.string().min(1, "Voice is Required"),
+  style: z.string().min(1, "Style is Required"),
+  duration: z.coerce.number().min(1, "Duration is Required"),
 })
 
 const subjects = ["Science", "Math", "Language", "Coding", "History", "Economics"]
 const voices = ["Male - Casual", "Male - Formal", "Female - Casual", "Female - Formal"]
 const styles = ["Friendly", "Professional", "Playful", "Strict"]
 
-const CompanionForm = () => {
+export function CompanionForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: "onSubmit",
     defaultValues: {
       name: "",
       subject: "",
@@ -43,115 +50,192 @@ const CompanionForm = () => {
   })
 
   function onSubmit(data: z.infer<typeof formSchema>) {
-    toast.success("Companion Created!", {
+    toast("Companion Created!", {
       description: (
         <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-slate-950 p-4 text-slate-50">
           <code>{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
+      position: "bottom-right",
+      classNames: {
+        content: "flex flex-col gap-2",
+      },
+      style: {
+        "--border-radius": "calc(var(--radius)  + 4px)",
+      } as React.CSSProperties,
     })
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Companion Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter companion name" {...field} className="input"/>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <Card className="w-full sm:max-w-md">
+      <CardHeader>
+        <CardTitle>Companion Builder</CardTitle>
+        <CardDescription>
+          Create your AI teaching companion.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form id="form-companion" onSubmit={form.handleSubmit(onSubmit)}>
+          <FieldGroup>
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-companion-name">
+                    Name
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="form-companion-name"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Neura the Brainy Explorer"
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="subject"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Subject</FormLabel>
-              <FormControl>
-                <select {...field} className="input w-full p-2 rounded border">
-                  <option value="">Select subject</option>
-                  {subjects.map((s) => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <Controller
+              name="subject"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-companion-subject">
+                    Subject
+                  </FieldLabel>
+                  <select
+                    {...field}
+                    id="form-companion-subject"
+                    aria-invalid={fieldState.invalid}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <option value="">Select subject</option>
+                    {subjects.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="topic"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Topic</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter topic" {...field} className="input"/>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <Controller
+              name="topic"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-companion-topic">
+                    Topic
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="form-companion-topic"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Neural Networks of the Brain"
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="voice"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Voice</FormLabel>
-              <FormControl>
-                <select {...field} className="input w-full p-2 rounded border">
-                  <option value="">Select voice</option>
-                  {voices.map((v) => <option key={v} value={v}>{v}</option>)}
-                </select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <Controller
+              name="voice"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-companion-voice">
+                    Voice
+                  </FieldLabel>
+                  <select
+                    {...field}
+                    id="form-companion-voice"
+                    aria-invalid={fieldState.invalid}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <option value="">Select voice</option>
+                    {voices.map((v) => (
+                      <option key={v} value={v}>{v}</option>
+                    ))}
+                  </select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="style"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Style</FormLabel>
-              <FormControl>
-                <select {...field} className="input w-full p-2 rounded border">
-                  <option value="">Select style</option>
-                  {styles.map((s) => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <Controller
+              name="style"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-companion-style">
+                    Style
+                  </FieldLabel>
+                  <select
+                    {...field}
+                    id="form-companion-style"
+                    aria-invalid={fieldState.invalid}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <option value="">Select style</option>
+                    {styles.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="duration"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Duration (minutes)</FormLabel>
-              <FormControl>
-                <Input type="number" placeholder="15" {...field} className="input"/>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type="submit" className="w-full">Create Companion</Button>
-      </form>
-    </Form>
+            <Controller
+              name="duration"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-companion-duration">
+                    Duration (minutes)
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    type="number"
+                    id="form-companion-duration"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="15"
+                  />
+                  <FieldDescription>
+                    Set the lesson duration in minutes.
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+        </form>
+      </CardContent>
+      <CardFooter>
+        <Field orientation="horizontal">
+          <Button type="button" variant="outline" onClick={() => form.reset()}>
+            Reset
+          </Button>
+          <Button type="submit" form="form-companion" className="w-full">
+            Create Companion
+          </Button>
+        </Field>
+      </CardFooter>
+    </Card>
   )
 }
-
-export default CompanionForm
