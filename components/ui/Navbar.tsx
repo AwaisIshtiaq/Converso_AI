@@ -31,7 +31,7 @@ const Navbar = () => {
                 ))}
                 <Show when="signed-out">
                     <SignInButton mode="modal">
-                        <button className="btn-signin">Sign In</button>
+                        <button style={{backgroundColor: "#000000", color: "#ffffff", borderRadius: "50px", padding: "12px 16px", fontSize: "14px", fontWeight: 500, border: "none", cursor: "pointer"}}>Sign In</button>
                     </SignInButton>
                 </Show>
                 <Show when="signed-in">
