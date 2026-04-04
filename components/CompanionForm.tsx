@@ -54,13 +54,13 @@ export function CompanionForm() {
     const newErrors: Record<string, string> = {}
     
     if (!data.name || data.name.trim() === "") {
-      newErrors.name = "Companion is Required"
+      newErrors.name = "Must required"
     }
     if (!data.subject || data.subject.trim() === "") {
-      newErrors.subject = "Subject is Required"
+      newErrors.subject = "Must required"
     }
     if (!data.topic || data.topic.trim() === "") {
-      newErrors.topic = "Topic is Required"
+      newErrors.topic = "Must required"
     }
     
     setErrors(newErrors)
