@@ -30,6 +30,7 @@ const styles = ["Friendly", "Professional", "Playful", "Strict"]
 const CompanionForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: "onSubmit",
     defaultValues: {
       name: "",
       subject: "",
