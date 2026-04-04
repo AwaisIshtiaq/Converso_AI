@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -20,10 +21,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { CreateCompanion } from "@/lib/actions/companion.actions"
 
 const subjects = ["Science", "Math", "Language", "Coding", "History", "Economics"]
-const voices = ["Male - Casual", "Male - Formal", "Female - Casual", "Female - Formal"]
-const styles = ["Friendly", "Professional", "Playful", "Strict"]
+const voices = ["Male", "Female"]
+const styles = ["Formal", "Casual"]
 
 interface FormData {
   name: string
@@ -36,8 +38,9 @@ interface FormData {
 
 export function CompanionForm() {
   const [errors, setErrors] = React.useState<Record<string, string>>({})
-  const [showErrors, setShowErrors] = React.useState(false)
-  
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const router = useRouter()
+
   const form = useForm<FormData>({
     mode: "onSubmit",
     defaultValues: {
@@ -50,43 +53,48 @@ export function CompanionForm() {
     },
   })
 
-  function validateForm(data: FormData): boolean {
+  const onSubmit = async (data: FormData) => {
+    setErrors({})
+
     const newErrors: Record<string, string> = {}
-    
     if (!data.name || data.name.trim() === "") {
       newErrors.name = "Companion name is required"
     }
     if (!data.subject || data.subject.trim() === "") {
-    newErrors.subject = "Please select a subject"
+      newErrors.subject = "Please select a subject"
     }
     if (!data.topic || data.topic.trim() === "") {
-    newErrors.topic = "Please enter a topic"
+      newErrors.topic = "Please enter a topic"
     }
-    
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
 
-  function onSubmit(data: FormData) {
-    if (!validateForm(data)) {
-      setShowErrors(true)
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
       return
     }
-    
-    toast("Companion Created!", {
-      description: (
-        <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-slate-950 p-4 text-slate-50">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-    })
+
+    setIsSubmitting(true)
+
+    try {
+      const companion = await CreateCompanion({
+        name: data.name,
+        subject: data.subject,
+        topic: data.topic,
+        voice: data.voice || "Male",
+        style: data.style || "Casual",
+        duration: data.duration,
+      })
+
+      if (companion?.id) {
+        toast.success("Companion Created!", {
+          description: `${data.name} is ready.`,
+        })
+        router.push(`/companions/${companion.id}`)
+      }
+    } catch (error) {
+      console.error("Create companion error:", error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -100,7 +108,7 @@ export function CompanionForm() {
       <CardContent>
         <form id="form-companion" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
-            <Field data-invalid={showErrors && !!errors.name}>
+            <Field data-invalid={!!errors.name}>
               <FieldLabel htmlFor="form-companion-name">
                 Companion Name
               </FieldLabel>
@@ -110,12 +118,12 @@ export function CompanionForm() {
                 autoComplete="off"
                 {...form.register("name")}
               />
-              {showErrors && errors.name && (
+              {errors.name && (
                 <FieldError errors={[errors.name]} />
               )}
             </Field>
 
-            <Field data-invalid={showErrors && !!errors.subject}>
+            <Field data-invalid={!!errors.subject}>
               <FieldLabel htmlFor="form-companion-subject">
                 Subject
               </FieldLabel>
@@ -129,12 +137,12 @@ export function CompanionForm() {
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
-              {showErrors && errors.subject && (
+              {errors.subject && (
                 <FieldError errors={[errors.subject]} />
               )}
             </Field>
 
-            <Field data-invalid={showErrors && !!errors.topic}>
+            <Field data-invalid={!!errors.topic}>
               <FieldLabel htmlFor="form-companion-topic">
                 Topic
               </FieldLabel>
@@ -144,7 +152,7 @@ export function CompanionForm() {
                 autoComplete="off"
                 {...form.register("topic")}
               />
-              {showErrors && errors.topic && (
+              {errors.topic && (
                 <FieldError errors={[errors.topic]} />
               )}
             </Field>
@@ -200,11 +208,19 @@ export function CompanionForm() {
       </CardContent>
       <CardFooter>
         <Field orientation="horizontal">
-          <Button type="button" variant="outline" onClick={() => { form.reset(); setShowErrors(false); }}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              form.reset()
+              setErrors({})
+            }}
+            disabled={isSubmitting}
+          >
             Reset
           </Button>
-          <Button type="submit" form="form-companion">
-            Create Companion
+          <Button type="submit" form="form-companion" disabled={isSubmitting}>
+            {isSubmitting ? "Creating..." : "Create Companion"}
           </Button>
         </Field>
       </CardFooter>
