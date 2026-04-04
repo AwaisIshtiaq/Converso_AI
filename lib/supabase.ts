@@ -1,32 +1,34 @@
-import { createClient } from '@supabase/supabase-js'
-import { auth } from '@clerk/nextjs/server'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-export async function createSupabaseClient() {
-  const authObj = await auth()
-  const userId = authObj.userId
-  
-  // Get Clerk's Supabase JWT - may be null if template not configured
-  let token: string | null = null
-  try {
-    token = await authObj.getToken({ template: 'supabase' })
-  } catch (e) {
-    console.error('Failed to get Supabase token:', e)
+// Public client for server components (read operations)
+export function createSupabaseClient(): SupabaseClient {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!url || !key) {
+    throw new Error('Missing Supabase environment variables')
+  }
+
+  return createClient(url, key)
+}
+
+// Authenticated client for server actions (write operations)
+export async function createAuthenticatedSupabaseClient(authToken?: string): Promise<SupabaseClient> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!url || !key) {
+    throw new Error('Missing Supabase environment variables')
   }
 
   const headers: Record<string, string> = {}
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`
+  if (authToken) {
+    headers['Authorization'] = `Bearer ${authToken}`
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      global: {
-        headers,
-      },
-    }
-  )
-
-  return supabase
+  return createClient(url, key, {
+    global: {
+      headers,
+    },
+  })
 }

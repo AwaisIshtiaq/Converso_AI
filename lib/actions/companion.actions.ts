@@ -1,7 +1,7 @@
 "use server"
 
 import { auth } from "@clerk/nextjs/server"
-import { createSupabaseClient } from "@/lib/supabase"
+import { createSupabaseClient, createAuthenticatedSupabaseClient } from "@/lib/supabase"
 
 type CreateCompanionInput = {
   name: string
@@ -10,6 +10,13 @@ type CreateCompanionInput = {
   voice: string
   style: string
   duration: number
+}
+
+type GetAllCompanions = {
+  limit?: number
+  page?: number
+  subject?: string
+  topic?: string
 }
 
 export const CreateCompanion = async (formData: CreateCompanionInput) => {
@@ -21,7 +28,7 @@ export const CreateCompanion = async (formData: CreateCompanionInput) => {
       throw new Error("Unauthorized - Please sign in to create a companion")
     }
 
-    const supabase = await createSupabaseClient()
+    const supabase = await createAuthenticatedSupabaseClient()
 
     const { data, error } = await supabase
       .from("companions")
@@ -50,4 +57,31 @@ export const CreateCompanion = async (formData: CreateCompanionInput) => {
     console.error("CreateCompanion error:", error)
     throw error
   }
+}
+
+export const getAllCompanions = async ({ limit = 10, page = 1, subject, topic }: GetAllCompanions) => {
+  const supabase = createSupabaseClient()
+
+  let query = supabase
+    .from('companions')
+    .select('*')
+
+  if (subject) {
+    query = query.eq('subject', subject)
+  }
+
+  if (topic) {
+    query = query.or(`topic.ilike.%${topic}%,name.ilike.%${topic}%`)
+  }
+
+  query = query.range((page - 1) * limit, page * limit - 1)
+
+  const { data: companions, error } = await query
+
+  if (error) {
+    console.error("Supabase error:", error)
+    throw new Error(error.message)
+  }
+
+  return companions || []
 }
