@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Companion is Required" }),
@@ -41,8 +42,14 @@ const CompanionForm = () => {
     },
   })
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values)
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    toast.success("Companion Created!", {
+      description: (
+        <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-slate-950 p-4 text-slate-50">
+          <code>{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    })
   }
 
   return (
@@ -53,9 +60,9 @@ const CompanionForm = () => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Companion Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter companion name" {...field} />
+                <Input placeholder="Enter companion name" {...field} className="input"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -69,7 +76,7 @@ const CompanionForm = () => {
             <FormItem>
               <FormLabel>Subject</FormLabel>
               <FormControl>
-                <select {...field} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                <select {...field} className="input w-full p-2 rounded border">
                   <option value="">Select subject</option>
                   {subjects.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
@@ -86,7 +93,7 @@ const CompanionForm = () => {
             <FormItem>
               <FormLabel>Topic</FormLabel>
               <FormControl>
-                <Input placeholder="Enter topic" {...field} />
+                <Input placeholder="Enter topic" {...field} className="input"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -100,7 +107,7 @@ const CompanionForm = () => {
             <FormItem>
               <FormLabel>Voice</FormLabel>
               <FormControl>
-                <select {...field} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                <select {...field} className="input w-full p-2 rounded border">
                   <option value="">Select voice</option>
                   {voices.map((v) => <option key={v} value={v}>{v}</option>)}
                 </select>
@@ -117,7 +124,7 @@ const CompanionForm = () => {
             <FormItem>
               <FormLabel>Style</FormLabel>
               <FormControl>
-                <select {...field} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                <select {...field} className="input w-full p-2 rounded border">
                   <option value="">Select style</option>
                   {styles.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
@@ -134,7 +141,7 @@ const CompanionForm = () => {
             <FormItem>
               <FormLabel>Duration (minutes)</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="Enter duration" {...field} />
+                <Input type="number" placeholder="15" {...field} className="input"/>
               </FormControl>
               <FormMessage />
             </FormItem>
