@@ -1,36 +1,159 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Converso
+
+**Real-time AI Teaching Platform**
+
+Converso is a Next.js-powered SaaS application that enables users to create AI teaching companions for interactive learning sessions. Built with modern React patterns, TypeScript, and Tailwind CSS.
+
+## Features
+
+- **AI Teaching Companions** — Create customizable AI companions for different subjects (Science, Math, Language, Coding, History, Economics)
+- **Interactive Sessions** — Real-time voice conversations with your AI companion
+- **Session Management** — Track completed sessions and lesson history
+- **Customizable Personalities** — Configure voice, style, and lesson duration
+- **Responsive Design** — Fully responsive UI with modern aesthetics
+
+## Tech Stack
+
+- **Framework**: [Next.js 16](https://nextjs.org) (App Router)
+- **Language**: [TypeScript](https://typescriptlang.org)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com) + shadcn/ui
+- **Forms**: React Hook Form + Zod validation
+- **Icons**: Lucide React
+- **Font**: Bricolage Grotesque + Geist
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ or Bun
+- Git
+
+### Installation
 
 ```bash
-npm run dev
+# Clone the repository
+git clone https://github.com/AwaisIshtiaq/Converso_AI.git
+cd Converso_AI
+
+# Install dependencies
+bun install
 # or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Run the development server
+bun run dev
+# or
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-## Learn More
+### Build for Production
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+bun run build
+# or
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/
+├── page.tsx                 # Homepage with popular companions
+├── layout.tsx               # Root layout with navigation
+├── globals.css              # Global styles and Tailwind config
+├── companions/
+│   ├── page.tsx             # Companions library listing
+│   └── New/
+│       └── page.tsx         # Create new companion form
+├── companion/
+│   └── [id]/
+│       └── page.tsx         # Individual companion session
+└── subscription/
+    └── page.tsx             # Subscription plans
 
-## Deploy on Vercel
+components/
+├── CompanionCard.tsx        # Companion display card
+├── CompanionsList.tsx       # Table view of companions
+├── CompanionForm.tsx        # New companion creation form
+├── CTA.tsx                  # Call-to-action section
+└── ui/                      # shadcn/ui components
+    ├── button.tsx
+    ├── card.tsx
+    ├── field.tsx
+    ├── form.tsx
+    ├── input.tsx
+    └── table.tsx
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+constants/
+└── index.ts                 # App constants and mock data
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+types/
+└── index.d.ts               # TypeScript type definitions
+```
+
+## Key Components
+
+### CompanionForm
+Multi-step form for creating AI teaching companions with:
+- Name input with validation
+- Subject selection (dropdown)
+- Topic input
+- Voice selection (Male/Female, Casual/Formal)
+- Style selection (Friendly, Professional, Playful, Strict)
+- Duration configuration
+- Real-time validation with error messages
+
+### CompanionCard
+Display card for companions featuring:
+- Subject badge with color coding
+- Bookmark functionality
+- Duration display
+- "Launch Lesson" CTA button
+
+### CompanionsList
+Table view for recently completed sessions with:
+- Lesson icon with subject color
+- Subject badge
+- Duration column
+- Clickable rows for session details
+
+## Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `bun dev` | Start development server |
+| `bun build` | Build for production |
+| `bun start` | Start production server |
+| `bun lint` | Run ESLint |
+
+## Deployment
+
+The easiest way to deploy is using [Vercel](https://vercel.com):
+
+```bash
+vercel --prod
+```
+
+Or connect your GitHub repository to Vercel for automatic deployments.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+Built with ❤️ using [Next.js](https://nextjs.org) and [shadcn/ui](https://ui.shadcn.com)
